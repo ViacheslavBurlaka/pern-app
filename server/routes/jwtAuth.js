@@ -6,9 +6,10 @@ const jwtGenerator = require("../utils/jwtGenerator");
 const validInfo = require("../middleware/validInfo");
 const authorize = require("../middleware/authorize");
 
-//authorizeentication
-
-router.post("/register", async (req, res) => {
+/**
+ * Register route
+ */
+router.post("/register", validInfo, async (req, res) => {
   // 1. desctructure the req.body (name, email, password)
   const { email, name, password } = req.body;
 
@@ -43,7 +44,10 @@ router.post("/register", async (req, res) => {
   }
 });
 
-router.post("/login", async (req, res) => {
+/**
+ * Login route
+ */
+router.post("/login", validInfo, async (req, res) => {
   // 1. Destructure email, password from req.body
   const { email, password } = req.body;
 
@@ -76,13 +80,17 @@ router.post("/login", async (req, res) => {
   }
 });
 
-// router.post("/verify", (req, res) => {
-//   try {
-//     res.json(true);
-//   } catch (err) {
-//     console.error(err.message);
-//     res.status(500).send("Server error");
-//   }
-// });
+/**
+ * Verify route
+ */
+router.get("/verify", authorize, (req, res) => {
+  try {
+    console.log("Token valid, user verified!");
+    res.json(true);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send("Server error");
+  }
+});
 
 module.exports = router;
