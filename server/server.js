@@ -11,6 +11,10 @@ app.use(express.json()); //req.body
  * ROUTES
  */
 
+// Register and login routes
+
+app.use("/auth", require("./routes/jwtAuth"));
+
 //create
 app.post("/todos", async (req, res) => {
   try {

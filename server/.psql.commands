@@ -1,0 +1,8 @@
+# Some psql commands to remember
+
+insert into users (user_name, user_email, user_password) values ('Adam', 'adam@gmail.com', 'asd123456');
+
+
+DELETE FROM users WHERE user_name = 'Michael';
+
+SELECT * FROM users;
