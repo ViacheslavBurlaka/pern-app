@@ -1,79 +1,49 @@
 import React, { Fragment, useEffect, useState } from 'react';
-import ListTodos from './components/ListTodos';
-import FormTodo from './components/FormTodo';
+import 'react-toastify/dist/ReactToastify.css';
+import { toast } from 'react-toastify';
+import { API_URL } from './constants';
 
-const API_URL = 'http://localhost:5000';
+// components
+import AppRouter from './components/router/Router';
+
+// Notifications lib
+toast.configure();
 
 function App() {
-  const [todos, setTodos] = useState([]);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  const getTodos = async () => {
+  const setAuth = (boolean) => {
+    setIsAuthenticated(boolean);
+  };
+
+  // Check if user's token is verified
+  const isAuth = async () => {
     try {
-      const response = await fetch(`${API_URL}/todos`);
-      const jsonData = await response.json();
-      setTodos(jsonData);
-    } catch (err) {
-      console.error(err.message);
+      const response = await fetch(`${API_URL}/auth/verify`, {
+        method: 'GET',
+        headers: {
+          jwtToken: localStorage.token
+        }
+      });
+
+      // response === true or false
+      const parseData = await response.json();
+
+      // user verified => authenticated => true
+      parseData === true ? setIsAuthenticated(true) : setIsAuthenticated(false);
+    } catch (e) {
+      console.error(e);
     }
   };
 
-  // only one time fetched
   useEffect(() => {
-    getTodos();
-  }, []);
-
-  const addTodo = async (description) => {
-    try {
-      const body = {
-        description
-      };
-      await fetch(`${API_URL}/todos`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(body)
-      });
-      await getTodos();
-    } catch (err) {
-      console.error(err.message);
-    }
-  };
-
-  const deleteTodo = async (id) => {
-    try {
-      await fetch(`${API_URL}/todos/${id}`, {
-        method: 'DELETE'
-      });
-      setTodos(todos.filter((todo) => todo.todo_id !== id));
-    } catch (err) {
-      console.error(err.message);
-    }
-  };
-
-  const changeTodo = async (description, todo) => {
-    try {
-      const body = { description };
-      await fetch(`${API_URL}/todos/${todo.todo_id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(body)
-      });
-      await getTodos();
-    } catch (err) {
-      console.error(err.message);
-    }
-  };
+    isAuth();
+  });
 
   return (
     <Fragment>
       <div className="container">
-        <h1 className="text-center mt-5">Pern Todos List</h1>
-        <FormTodo addTodo={addTodo} />
-        <ListTodos
-          todos={todos}
-          setTodos={setTodos}
-          deleteTodo={deleteTodo}
-          changeTodo={changeTodo}
-        />
+        <AppRouter setAuth={setAuth} isAuthenticated={isAuthenticated} />
       </div>
     </Fragment>
   );
