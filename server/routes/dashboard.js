@@ -3,19 +3,15 @@ const router = express.Router();
 const pool = require("../db");
 const authorize = require("../middleware/authorize");
 
+// get all todos and user name
 router.get("/", authorize, async (req, res) => {
   try {
+    // get u.user_name, t.todo_id, t.description
     const user = await pool.query(
-      "SELECT user_name FROM users WHERE user_id = $1",
+      "SELECT u.user_name, t.todo_id, t.description FROM users AS u LEFT JOIN todos AS t ON u.user_id = t.user_id WHERE u.user_id = $1",
       [req.user.id]
     );
 
-    // const user = await pool.query(
-    //   "SELECT u.user_name, t.todo_id, t.description FROM users AS u LEFT JOIN todos AS t ON u.user_id = t.user_id WHERE u.user_id = $1",
-    //   [req.user.id]
-    // );
-
-    // return user's public information { user_name}
     res.json(user.rows);
   } catch (err) {
     console.error(err.message);
@@ -23,16 +19,14 @@ router.get("/", authorize, async (req, res) => {
   }
 });
 
-//TODO: rewrite todos
-
 //create
-router.post("/todos", async (req, res) => {
+router.post("/todos", authorize, async (req, res) => {
   try {
     // console.log(req.body)
     const { description } = req.body;
     const newTodo = await pool.query(
-      "INSERT INTO todo (description) VALUES($1) RETURNING *",
-      [description]
+      "INSERT INTO todos (user_id, description) VALUES($1, $2) RETURNING *",
+      [req.user.id, description]
     );
     res.json(newTodo.rows[0]);
   } catch (err) {
@@ -40,37 +34,14 @@ router.post("/todos", async (req, res) => {
   }
 });
 
-//get all
-router.get("/todos", async (req, res) => {
-  try {
-    const allTodos = await pool.query("SELECT * FROM todo");
-    res.json(allTodos.rows);
-  } catch (err) {
-    console.error(err.message);
-  }
-});
-
-//get one
-router.get("/todos/:id", async (req, res) => {
-  try {
-    const { id } = req.params;
-    const todo = await pool.query("SELECT * FROM todo WHERE todo_id = $1", [
-      id,
-    ]);
-    res.json(todo.rows[0]);
-  } catch (err) {
-    console.error(err.message);
-  }
-});
-
 //update
-router.put("/todos/:id", async (req, res) => {
+router.put("/todos/:id", authorize, async (req, res) => {
   try {
     const { id } = req.params;
     const { description } = req.body;
-    const updateTodo = await pool.query(
-      "UPDATE todo SET description = $1 WHERE todo_id = $2",
-      [description, id]
+    await pool.query(
+      "UPDATE todos SET description = $1 WHERE todo_id = $2 AND user_id = $3",
+      [description, id, req.user.id]
     );
     res.json(`Todo has been updated!`);
   } catch (err) {
@@ -79,12 +50,13 @@ router.put("/todos/:id", async (req, res) => {
 });
 
 //delete
-router.delete("/todos/:id", async (req, res) => {
+router.delete("/todos/:id", authorize, async (req, res) => {
   try {
     const { id } = req.params;
-    const deleteTodo = await pool.query("DELETE FROM todo WHERE todo_id = $1", [
-      id,
-    ]);
+    const deleteTodo = await pool.query(
+      "DELETE FROM todos WHERE todo_id = $1 AND user_id = $2",
+      [id, req.user.id]
+    );
     res.json("Todo has been deleted!");
   } catch (err) {
     console.log(err.message);

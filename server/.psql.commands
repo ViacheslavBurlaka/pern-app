@@ -1,5 +1,7 @@
 # Some psql commands to remember
 
+psql -U postgres
+
 insert into users (user_name, user_email, user_password) values ('Adam', 'adam@gmail.com', 'asd123456');
 
 
