@@ -10,7 +10,6 @@ import {
 import LoginContainer from '../auth/LoginContainer';
 import RegisterContainer from '../auth/RegisterContainer';
 import DashboardContainer from '../dashboard/DashboardContainer';
-import TodoContainer from '../dashboard/TodoContainer';
 import Home from '../dashboard/Home';
 
 const AppRouter = ({ setAuth, isAuthenticated }) => {
@@ -21,11 +20,7 @@ const AppRouter = ({ setAuth, isAuthenticated }) => {
           exact
           path="/"
           render={(props) =>
-            isAuthenticated ? (
-              <Redirect to="/dashboard" />
-            ) : (
-              <Home {...props} setAuth={setAuth} />
-            )
+            isAuthenticated ? <Redirect to="/dashboard" /> : <Home {...props} />
           }
         />
         <Route
@@ -61,12 +56,7 @@ const AppRouter = ({ setAuth, isAuthenticated }) => {
             )
           }
         />
-        <Route
-          exact
-          path="/todo"
-          render={(props) => <TodoContainer {...props} />}
-        />
-        <Redirect to="/dashboard" />
+        <Redirect to="/" />
       </Switch>
     </Router>
   );

@@ -5,12 +5,14 @@ import { API_URL } from './constants';
 
 // components
 import AppRouter from './components/router/Router';
+import Loader from './components/ui/Loader';
 
 // Notifications lib
 toast.configure();
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   const setAuth = (boolean) => {
     setIsAuthenticated(boolean);
@@ -37,8 +39,12 @@ function App() {
   };
 
   useEffect(() => {
-    isAuth();
+    isAuth().then(() => setIsLoading(false));
   }, []);
+
+  if (isLoading) {
+    return <Loader />;
+  }
 
   return (
     <Fragment>
