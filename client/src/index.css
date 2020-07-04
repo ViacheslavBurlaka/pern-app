@@ -12,7 +12,28 @@ code {
     monospace;
 }
 
+/* Custom styles */
 .table tr td:first-of-type,
 .table tr th:first-of-type {
   text-align: left;
+}
+
+.table tr td:last-of-type,
+.table tr th:last-of-type {
+  padding-right: 0;
+  text-align: right;
+}
+
+.Loader {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.Loader img {
+  width: 4rem;
+  height: 4rem;
 }

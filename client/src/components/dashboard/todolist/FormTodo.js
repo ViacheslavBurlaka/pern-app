@@ -18,14 +18,18 @@ const FormTodo = ({ addTodo }) => {
   return (
     <Fragment>
       <form className="d-flex mt-5" onSubmit={onSubmitForm}>
-        <input
-          type="text"
-          className="form-control"
-          placeholder="Add todo"
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-        />
-        <button className="btn btn-success">Add</button>
+        <div className="input-group mb-3">
+          <input
+            type="text"
+            className="form-control "
+            placeholder="Add todo"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+          />
+          <div className="input-group-append">
+            <button className="btn btn-success">Add</button>
+          </div>
+        </div>
       </form>
       {warning && (
         <div className="alert alert-warning mt-2 pt-1 pb-1">Add some todos</div>
