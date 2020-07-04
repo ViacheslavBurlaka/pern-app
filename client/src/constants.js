@@ -1,1 +1,2 @@
-export const API_URL = 'http://localhost:5000';
+// added proxy at package.json
+export const API_URL = '';

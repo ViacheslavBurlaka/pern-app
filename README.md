@@ -1,5 +1,7 @@
 ##Full-stack web application based on PostgreSQL, Express, React, and Node.js
 
+![client view](app.png)
+
 ![project diagram](pern-todo-app-diagram.png)
 
 ---

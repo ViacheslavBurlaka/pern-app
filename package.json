@@ -3,8 +3,13 @@
   "version": "1.0.0",
   "description": "PERN",
   "main": "index.js",
+  "engines": {
+    "node": "10.16.2",
+    "npm": "6.14.5"
+  },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node index.js",
+    "heroku-postbuild": "cd client && yarn install && yarn run build"
   },
   "keywords": [
     "PERN"
