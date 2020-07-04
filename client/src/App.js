@@ -38,13 +38,11 @@ function App() {
 
   useEffect(() => {
     isAuth();
-  });
+  }, []);
 
   return (
     <Fragment>
-      <div className="container">
-        <AppRouter setAuth={setAuth} isAuthenticated={isAuthenticated} />
-      </div>
+      <AppRouter setAuth={setAuth} isAuthenticated={isAuthenticated} />
     </Fragment>
   );
 }

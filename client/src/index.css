@@ -16,3 +16,9 @@ code {
 .table tr th:first-of-type {
   text-align: left;
 }
+
+.table tr td:last-of-type,
+.table tr th:last-of-type {
+  padding-right: 0;
+  text-align: right;
+}

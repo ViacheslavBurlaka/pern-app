@@ -11,11 +11,23 @@ import LoginContainer from '../auth/LoginContainer';
 import RegisterContainer from '../auth/RegisterContainer';
 import DashboardContainer from '../dashboard/DashboardContainer';
 import TodoContainer from '../dashboard/TodoContainer';
+import Home from '../dashboard/Home';
 
 const AppRouter = ({ setAuth, isAuthenticated }) => {
   return (
     <Router>
       <Switch>
+        <Route
+          exact
+          path="/"
+          render={(props) =>
+            isAuthenticated ? (
+              <Redirect to="/dashboard" />
+            ) : (
+              <Home {...props} setAuth={setAuth} />
+            )
+          }
+        />
         <Route
           exact
           path="/login"

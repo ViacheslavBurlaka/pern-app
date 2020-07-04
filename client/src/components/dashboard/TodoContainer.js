@@ -1,37 +1,24 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import FormTodo from './todolist/FormTodo';
 import ListTodos from './todolist/ListTodos';
 import { API_URL } from '../../constants';
 
-const TodoContainer = () => {
-  const [todos, setTodos] = useState([]);
-
-  const getTodos = async () => {
-    try {
-      const response = await fetch(`${API_URL}/todos`);
-      const jsonData = await response.json();
-      setTodos(jsonData);
-    } catch (err) {
-      console.error(err.message);
-    }
-  };
-
-  // only one time fetched
-  useEffect(() => {
-    getTodos();
-  }, []);
-
+const TodoContainer = ({ todos, setTodosChange, setAllTodos }) => {
   const addTodo = async (description) => {
     try {
       const body = {
         description
       };
-      await fetch(`${API_URL}/todos`, {
+      await fetch(`${API_URL}/dashboard/todos`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          jwtToken: localStorage.token
+        },
         body: JSON.stringify(body)
       });
-      await getTodos();
+
+      setTodosChange(true);
     } catch (err) {
       console.error(err.message);
     }
@@ -39,10 +26,13 @@ const TodoContainer = () => {
 
   const deleteTodo = async (id) => {
     try {
-      await fetch(`${API_URL}/todos/${id}`, {
-        method: 'DELETE'
+      await fetch(`${API_URL}/dashboard/todos/${id}`, {
+        method: 'DELETE',
+        headers: {
+          jwtToken: localStorage.token
+        }
       });
-      setTodos(todos.filter((todo) => todo.todo_id !== id));
+      setAllTodos(todos.filter((todo) => todo.todo_id !== id));
     } catch (err) {
       console.error(err.message);
     }
@@ -51,27 +41,29 @@ const TodoContainer = () => {
   const changeTodo = async (description, todo) => {
     try {
       const body = { description };
-      await fetch(`${API_URL}/todos/${todo.todo_id}`, {
+      await fetch(`${API_URL}/dashboard/todos/${todo.todo_id}`, {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          jwtToken: localStorage.token
+        },
         body: JSON.stringify(body)
       });
-      await getTodos();
+
+      setTodosChange(true);
     } catch (err) {
       console.error(err.message);
     }
   };
   return (
-    <>
-      <h1 className="text-center mt-5">Pern Todos List</h1>
+    <div className="container">
       <FormTodo addTodo={addTodo} />
       <ListTodos
         todos={todos}
-        setTodos={setTodos}
         deleteTodo={deleteTodo}
         changeTodo={changeTodo}
       />
-    </>
+    </div>
   );
 };
 

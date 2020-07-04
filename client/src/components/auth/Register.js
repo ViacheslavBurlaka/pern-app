@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 
 const Register = ({ email, password, name, onSubmitForm, onChange }) => {
   return (
-    <>
+    <div className="container">
       <h1 className="mt-5 text-center">Register</h1>
       <form onSubmit={onSubmitForm}>
         <input
@@ -35,7 +35,7 @@ const Register = ({ email, password, name, onSubmitForm, onChange }) => {
       <Link className="btn btn-sm btn-outline-primary mt-3" to="/login">
         login
       </Link>
-    </>
+    </div>
   );
 };
 

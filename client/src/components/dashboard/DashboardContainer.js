@@ -4,17 +4,12 @@ import { API_URL } from '../../constants';
 
 // components
 import Dashboard from './Dashboard';
-
-//components
-// import FormTodo from './todolist/FormTodo';
-// import ListTodos from './todolist/ListTodos';
+import TodoContainer from './TodoContainer';
 
 const DashboardContainer = ({ setAuth }) => {
   const [name, setName] = useState('Your');
-
-  // const [allTodos, setAllTodos] = useState([]);
-
-  // const [todosChange, setTodosChange] = useState(false);
+  const [allTodos, setAllTodos] = useState([]);
+  const [todosChange, setTodosChange] = useState(false);
 
   const getProfile = async () => {
     try {
@@ -25,7 +20,7 @@ const DashboardContainer = ({ setAuth }) => {
 
       const parseData = await res.json();
 
-      // setAllTodos(parseData);
+      setAllTodos(parseData);
 
       setName(parseData[0].user_name);
     } catch (err) {
@@ -47,11 +42,27 @@ const DashboardContainer = ({ setAuth }) => {
     }
   };
 
+  // getProfile call once at 1st render
   useEffect(() => {
     getProfile();
   }, []);
 
-  return <Dashboard name={name} logout={logout} />;
+  // getProfile call always when todosChange === true
+  useEffect(() => {
+    setTodosChange(false);
+    if (todosChange) getProfile();
+  }, [todosChange]);
+
+  return (
+    <>
+      <Dashboard name={name} logout={logout} />
+      <TodoContainer
+        todos={allTodos}
+        setTodosChange={setTodosChange}
+        setAllTodos={setAllTodos}
+      />
+    </>
+  );
 };
 
 export default DashboardContainer;

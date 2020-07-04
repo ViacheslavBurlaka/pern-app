@@ -3,13 +3,11 @@ import React, { Fragment } from 'react';
 import EditTodo from './EditTodo';
 
 const ListTodos = ({ todos, deleteTodo, changeTodo }) => {
-  console.log(todos);
-
   // sorted by id
   const todosSorted = todos.sort((a, b) => b.todo_id - a.todo_id);
 
   const todosMarkup =
-    todosSorted.length > 0 ? (
+    todosSorted.length > 0 && todosSorted[0].todo_id !== null ? (
       todosSorted.map((todo) => (
         <tr key={todo.todo_id}>
           <td>{todo.description}</td>
