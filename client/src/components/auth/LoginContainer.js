@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
-import { toast } from 'react-toastify';
-import { API_URL } from '../../constants';
 
 // Components
 import Login from './Login';
 
-const LoginContainer = ({ setAuth }) => {
+// context
+import { useAuth } from '../../context/auth';
+
+const LoginContainer = () => {
+  const { login } = useAuth();
+
   const [inputs, setInputs] = useState({
     email: '',
     password: ''
@@ -23,28 +26,10 @@ const LoginContainer = ({ setAuth }) => {
 
   const onSubmitForm = async (e) => {
     e.preventDefault();
-    try {
-      const body = { email, password };
-      const response = await fetch(`${API_URL}/auth/login`, {
-        method: 'POST',
-        headers: {
-          'Content-type': 'application/json'
-        },
-        body: JSON.stringify(body)
-      });
-      const parseRes = await response.json();
 
-      if (parseRes.jwtToken) {
-        localStorage.setItem('token', parseRes.jwtToken);
-        setAuth(true);
-        toast.success('Logged in Successfully');
-      } else {
-        setAuth(false);
-        toast.error(parseRes);
-      }
-    } catch (err) {
-      console.error(err.message);
-    }
+    const body = { email, password };
+
+    await login(body);
   };
 
   return (

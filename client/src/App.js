@@ -1,55 +1,21 @@
-import React, { Fragment, useEffect, useState } from 'react';
+import React from 'react';
 import 'react-toastify/dist/ReactToastify.css';
 import { toast } from 'react-toastify';
-import { API_URL } from './constants';
 
 // components
 import AppRouter from './components/router/Router';
-import Loader from './components/ui/Loader';
+import AppProviders from './context/AppProviders';
 
 // Notifications lib
 toast.configure();
 
 function App() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
-
-  const setAuth = (boolean) => {
-    setIsAuthenticated(boolean);
-  };
-
-  // Check if user's token is verified
-  const isAuth = async () => {
-    try {
-      const response = await fetch(`${API_URL}/auth/verify`, {
-        method: 'GET',
-        headers: {
-          jwtToken: localStorage.token
-        }
-      });
-
-      // response === true or false
-      const parseData = await response.json();
-
-      // user verified => authenticated => true
-      parseData === true ? setIsAuthenticated(true) : setIsAuthenticated(false);
-    } catch (e) {
-      console.error(e);
-    }
-  };
-
-  useEffect(() => {
-    isAuth().then(() => setIsLoading(false));
-  }, []);
-
-  if (isLoading) {
-    return <Loader />;
-  }
-
   return (
-    <Fragment>
-      <AppRouter setAuth={setAuth} isAuthenticated={isAuthenticated} />
-    </Fragment>
+    <>
+      <AppProviders>
+        <AppRouter />
+      </AppProviders>
+    </>
   );
 }
 
