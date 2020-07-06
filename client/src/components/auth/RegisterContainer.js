@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
-import { toast } from 'react-toastify';
-import { API_URL } from '../../constants';
 
 // components
 import Register from './Register';
 
-const RegisterContainer = ({ setAuth }) => {
+// context
+import { useAuth } from '../../context/auth';
+
+const RegisterContainer = () => {
+  const { register } = useAuth();
+
   const [inputs, setInputs] = useState({
     email: '',
     password: '',
@@ -24,30 +27,10 @@ const RegisterContainer = ({ setAuth }) => {
 
   const onSubmitForm = async (e) => {
     e.preventDefault();
-    try {
-      const body = { email, password, name };
-      const response = await fetch(`${API_URL}/auth/register`, {
-        method: 'POST',
-        headers: {
-          'Content-type': 'application/json'
-        },
-        body: JSON.stringify(body)
-      });
 
-      const parseRes = await response.json();
-      console.log('Server response: ', parseRes);
+    const body = { email, password, name };
 
-      if (parseRes.jwtToken) {
-        localStorage.setItem('token', parseRes.jwtToken);
-        setAuth(true);
-        toast.success('Register Successfully');
-      } else {
-        setAuth(false);
-        toast.error(parseRes, { autoClose: 5000 });
-      }
-    } catch (err) {
-      console.error(err.message);
-    }
+    await register(body);
   };
 
   return (

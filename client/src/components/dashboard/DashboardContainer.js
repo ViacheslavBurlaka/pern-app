@@ -1,12 +1,16 @@
 import React, { useEffect, useState } from 'react';
-import { toast } from 'react-toastify';
 import { API_URL } from '../../constants';
 
 // components
 import Dashboard from './Dashboard';
 import TodoContainer from './TodoContainer';
 
-const DashboardContainer = ({ setAuth }) => {
+// context
+import { useAuth } from '../../context/auth';
+
+const DashboardContainer = () => {
+  const { logout } = useAuth();
+
   const [name, setName] = useState('Your');
   const [allTodos, setAllTodos] = useState([]);
   const [todosChange, setTodosChange] = useState(false);
@@ -28,20 +32,6 @@ const DashboardContainer = ({ setAuth }) => {
     }
   };
 
-  const logout = async (e) => {
-    e.preventDefault();
-
-    try {
-      localStorage.removeItem('token');
-
-      setAuth(false);
-
-      toast.success('Logout successfully');
-    } catch (err) {
-      console.error(err.message);
-    }
-  };
-
   // getProfile call once at 1st render
   useEffect(() => {
     getProfile();
@@ -53,9 +43,15 @@ const DashboardContainer = ({ setAuth }) => {
     if (todosChange) getProfile();
   }, [todosChange]);
 
+  const handleLogout = (e) => {
+    e.preventDefault();
+
+    logout();
+  };
+
   return (
     <>
-      <Dashboard name={name} logout={logout} />
+      <Dashboard name={name} logout={(e) => handleLogout(e)} />
       <TodoContainer
         todos={allTodos}
         setTodosChange={setTodosChange}

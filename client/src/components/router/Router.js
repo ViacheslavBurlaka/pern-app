@@ -11,8 +11,14 @@ import LoginContainer from '../auth/LoginContainer';
 import RegisterContainer from '../auth/RegisterContainer';
 import DashboardContainer from '../dashboard/DashboardContainer';
 import Home from '../dashboard/Home';
+import { useAuth } from '../../context/auth';
 
-const AppRouter = ({ setAuth, isAuthenticated }) => {
+// TODO: lazy loading (split bundles)
+// const LoginContainer = React.lazy(() => import('../auth/LoginContainer'));
+
+const AppRouter = () => {
+  const { isAuthenticated } = useAuth();
+
   return (
     <Router>
       <Switch>
@@ -30,7 +36,7 @@ const AppRouter = ({ setAuth, isAuthenticated }) => {
             isAuthenticated ? (
               <Redirect to="/dashboard" />
             ) : (
-              <LoginContainer {...props} setAuth={setAuth} />
+              <LoginContainer {...props} />
             )
           }
         />
@@ -39,9 +45,9 @@ const AppRouter = ({ setAuth, isAuthenticated }) => {
           path="/register"
           render={(props) =>
             isAuthenticated ? (
-              <Redirect to="/login" />
+              <Redirect to="/dashboard" />
             ) : (
-              <RegisterContainer {...props} setAuth={setAuth} />
+              <RegisterContainer {...props} />
             )
           }
         />
@@ -50,7 +56,7 @@ const AppRouter = ({ setAuth, isAuthenticated }) => {
           path="/dashboard"
           render={(props) =>
             isAuthenticated ? (
-              <DashboardContainer {...props} setAuth={setAuth} />
+              <DashboardContainer {...props} />
             ) : (
               <Redirect to="/login" />
             )
